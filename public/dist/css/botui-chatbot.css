@@ -1,0 +1,228 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+/*
+ * botui 0.3.9
+ * A JS library to build the UI for your bot
+ * https://botui.org
+ *
+ * Copyright 2019, Moin Uddin
+ * Released under the MIT license.
+*/
+
+a.botui-message-content-link:focus{outline:thin dotted}a.botui-message-content-link:focus:active,a.botui-message-content-link:focus:hover{outline:0}form.botui-actions-text{margin:0}button.botui-actions-buttons-button,input.botui-actions-text-input{margin:0;font-size:100%;line-height:normal;vertical-align:baseline}button.botui-actions-buttons-button::-moz-focus-inner,input.botui-actions-text-input::-moz-focus-inner{border:0;padding:0}button.botui-actions-buttons-button{cursor:pointer;-webkit-appearance:button}
+.botui-app-container{width:100%;height:100%;line-height:1}@media (min-width:400px){.botui-app-container{width:400px;height:500px;margin:0 auto}}.botui-container{width:100%;height:100%;overflow-y:auto;overflow-x:hidden}.botui-message{margin:10px 0;min-height:20px}.botui-message:after{display:block;content:"";clear:both}.botui-message-content{width:auto;max-width:75%;display:inline-block}.botui-message-content.human{float:right}.botui-message-content iframe{width:100%}.botui-message-content-image{margin:5px 0;display:block;max-width:200px;max-height:200px}.botui-message-content-link{text-decoration:underline}.profil{position:relative;border-radius:50%}.profil.human{float:right;margin-left:5px}.profil.agent{float:left;margin-right:5px}.profil>img{width:26px;height:26px;border:2px solid #e8e8e8}.profil>img.agent{content:url(http://decodemoji.com/img/logos/blue_moji_hat.svg);border-radius:50%}button.botui-actions-buttons-button{margin-top:10px;margin-bottom:10px}button.botui-actions-buttons-button:not(:last-child){margin-right:10px}@media (min-width:400px){.botui-actions-text-submit{display:none}}
+.botui-container{font-size:14px;background-color:#fff;font-family:"Open Sans",sans-serif}.botui-messages-container{padding:10px 20px}.botui-actions-container{padding:10px 20px}.botui-message{min-height:30px}.botui-message-content{padding:7px 13px;border-radius:15px;color:#595a5a;background-color:#ebebeb}.botui-message-content.human{color:#f7f8f8;background-color:#919292}.botui-message-content.text{line-height:1.3}.botui-message-content.loading{background-color:rgba(206,206,206,.5);line-height:1.3;text-align:center}.botui-message-content.embed{padding:5px;border-radius:5px}.botui-message-content-link{color:#919292}.botui-actions-text-input{border:0;outline:0;border-radius:0;padding:5px 7px;font-family:"Open Sans",sans-serif;background-color:transparent;color:#595a5a;border-bottom:1px solid #919292}.botui-actions-text-submit{color:#fff;width:30px;padding:5px;height:30px;line-height:1;border-radius:50%;border:1px solid #919292;background:#777979}.botui-actions-buttons-button{border:0;color:#fff;line-height:1;cursor:pointer;font-size:14px;font-weight:500;padding:7px 15px;border-radius:4px;font-family:"Open Sans",sans-serif;background:#777979;box-shadow:2px 3px 4px 0 rgba(0,0,0,.25)}.botui-actions-text-select{border:0;outline:0;border-radius:0;padding:5px 7px;font-family:"Open Sans",sans-serif;background-color:transparent;color:#595a5a;border-bottom:1px solid #919292}.botui-actions-text-searchselect{border:0;outline:0;border-radius:0;padding:5px 7px;font-family:"Open Sans",sans-serif;background-color:transparent;color:#595a5a;border-bottom:1px solid #919292}.botui-actions-text-searchselect .dropdown-toggle{border:none!important}.botui-actions-text-searchselect .selected-tag{background-color:transparent!important;border:0!important}.slide-fade-enter-active{transition:all .3s ease}.slide-fade-enter,.slide-fade-leave-to{opacity:0;transform:translateX(-10px)}.dot{width:.5rem;height:.5rem;border-radius:.5rem;display:inline-block;background-color:#919292}.dot:nth-last-child(1){margin-left:.3rem;animation:loading .6s .3s linear infinite}.dot:nth-last-child(2){margin-left:.3rem;animation:loading .6s .2s linear infinite}.dot:nth-last-child(3){animation:loading .6s .1s linear infinite}@keyframes loading{0%{transform:translate(0,0);background-color:#ababab}25%{transform:translate(0,-3px)}50%{transform:translate(0,0);background-color:#ababab}75%{transform:translate(0,3px)}100%{transform:translate(0,0)}}
+/**
+ * BotUI FAQ Chatbot Styles
+ */
+
+/* Chat container */
+#botui-app {
+    position: fixed;
+    bottom: 90px;
+    width: 350px;
+    height: 500px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 9999;
+    transition: all 0.5s ease;
+}
+
+/* Position classes for chat window */
+#botui-app.chat-position-right {
+    right: 20px;
+}
+
+#botui-app.chat-position-left {
+    left: 20px;
+}
+
+/* Chat toggle button */
+.chat-toggle-button {
+    position: fixed;
+    bottom: 20px;
+    width: 60px;
+    height: 60px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 9998;
+    transition: all 0.3s ease;
+}
+
+/* Position classes */
+.chat-toggle-button.chat-position-right {
+    right: 20px;
+}
+
+.chat-toggle-button.chat-position-left {
+    left: 20px;
+}
+
+.chat-toggle-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.chat-toggle-button.button-hidden {
+    /* transform: scale(0);
+    opacity: 0; */
+}
+
+/* Hidden state for chat window */
+#botui-app.chat-hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    pointer-events: none;
+}
+
+/* Animation classes for chat window */
+#botui-app.chat-animate-in {
+    animation: chatSlideIn 0.4s ease forwards;
+}
+
+#botui-app.chat-animate-out {
+    animation: chatSlideOut 0.3s ease forwards;
+}
+
+/* Hidden state for toggle button */
+.chat-toggle-button.button-hidden {
+    /* opacity: 0;
+    visibility: hidden;
+    transform: scale(0.5);
+    pointer-events: none; */
+}
+
+/* Animations */
+@keyframes chatSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes chatSlideOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.9);
+    }
+}
+
+/* Chat header */
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #4e8cff;
+    color: white;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.chat-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Close button */
+.chat-close {
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 8px;
+    line-height: 1;
+}
+
+.chat-close:hover {
+    opacity: 0.8;
+}
+
+/* BotUI customizations */
+.botui-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+.botui-message {
+    margin-bottom: 10px;
+}
+
+.botui-message-content {
+    border-radius: 15px;
+    padding: 10px 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.botui-message-content.human {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.botui-message-content.bot {
+    background-color: #4e8cff;
+    color: white;
+}
+
+.botui-actions-buttons {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.botui-actions-buttons button {
+    margin: 5px 5px 5px 0;
+    border-radius: 20px;
+    padding: 8px 16px;
+    /* background-color: #f1f0f0; */
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.botui-actions-buttons button:hover {
+    background-color: #e0e0e0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    #botui-app {
+        width: 90vw;
+        max-height: 70vh;
+    }
+    
+    .chat-toggle-button {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .chat-toggle-button i {
+        font-size: 20px;
+    }
+}
+
+.chat-toggle-button {
+    background-color: var(--primary-color);
+}
+
