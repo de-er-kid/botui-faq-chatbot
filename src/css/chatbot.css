@@ -213,3 +213,9 @@
 .chat-toggle-button {
     background-color: var(--primary-color);
 }
+
+.botui-message-content a {
+    /* color: #0066cc; */
+    text-decoration: underline;
+    pointer-events: auto !important;
+}

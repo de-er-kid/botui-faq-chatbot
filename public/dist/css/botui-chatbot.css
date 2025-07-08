@@ -227,3 +227,9 @@ a.botui-message-content-link:focus{outline:thin dotted}a.botui-message-content-l
     background-color: var(--primary-color);
 }
 
+.botui-message-content a {
+    /* color: #0066cc; */
+    text-decoration: underline;
+    pointer-events: auto !important;
+}
+

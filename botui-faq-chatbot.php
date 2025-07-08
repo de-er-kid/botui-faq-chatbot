@@ -107,8 +107,8 @@ function botui_faq_chatbot_enqueue_scripts() {
     foreach ($faq_items as $faq) {
         $faq_data[] = array(
             'id'       => $faq->ID,
-            'question' => html_entity_decode(wp_strip_all_tags($faq->post_title)),
-            'answer'   => html_entity_decode(wp_strip_all_tags($faq->post_content)),
+            'question' => htmlspecialchars($faq->post_title, ENT_QUOTES, 'UTF-8'),
+            'answer'   => wp_json_encode(apply_filters('the_content', $faq->post_content)),
         );
     }
     

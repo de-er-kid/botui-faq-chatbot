@@ -45,7 +45,12 @@ import 'botui/build/botui-theme-default.css';
         
         try {
             // Initialize BotUI
-            botui = new BotUI('botui-app');
+            botui = new BotUI('botui-app', {
+                vue: {
+                    // Add this configuration
+                    unsafeHTML: true
+                }
+            });
             isInitialized = true;
             
             // Display welcome message
@@ -57,8 +62,8 @@ import 'botui/build/botui-theme-default.css';
                 if (typeof botuiFaqChatbot !== 'undefined' && 
                     botuiFaqChatbot.faqData && 
                     Array.isArray(botuiFaqChatbot.faqData) && 
-                    botuiFaqChatbot.faqData.length > 0) {
-                    return showQuestions(true, false); // Show all questions for initial display
+                    botuiFaqChatbot.faqData.some(faq => faq?.id)) { // Check for at least one valid FAQ
+                    return showQuestions(true, false);
                 } else {
                     console.warn('FAQ data is missing or empty');
                     return botui.message.add({
@@ -125,9 +130,13 @@ import 'botui/build/botui-theme-default.css';
                 
                 // Show the answer
                 if (selectedFaq) {
+                    // In the showQuestions function:
                     return botui.message.add({
-                        content: selectedFaq.answer,
-                        delay: DELAY.ANSWER
+                        content: JSON.parse(selectedFaq.answer),
+                        delay: DELAY.ANSWER,
+                        loading: true,
+                        type: 'html',  // Force HTML rendering
+                        unsafeHTML: true
                     }).then(function() {
                         return botui.message.add({
                             content: 'Is there anything else you would like to know?',
