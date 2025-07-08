@@ -1,0 +1,47 @@
+/**
+ * Admin styles for BotUI FAQ Chatbot
+ *
+ * @since      1.0.0
+ * @package    BotUI_FAQ_Chatbot
+ */
+
+/* Custom post type icon styling */
+#adminmenu .menu-icon-botui_faq div.wp-menu-image:before {
+    color: #4e8cff;
+}
+
+/* FAQ item edit screen customizations */
+.post-type-botui_faq .wp-editor-container {
+    border: 1px solid #e5e5e5;
+}
+
+/* Help text styling */
+.botui-faq-help-text {
+    background: #f9f9f9;
+    border-left: 4px solid #4e8cff;
+    padding: 10px 15px;
+    margin: 15px 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #444;
+}
+
+/* Admin notices specific to the plugin */
+.botui-faq-admin-notice {
+    border-left-color: #4e8cff;
+}
+
+/* Custom metabox styling */
+.botui-faq-metabox {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    padding: 15px;
+    margin: 15px 0;
+}
+
+.botui-faq-metabox h3 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}

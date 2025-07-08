@@ -1,0 +1,28 @@
+{
+  "name": "botui-faq-chatbot",
+  "version": "1.0.0",
+  "description": "A WordPress plugin that uses BotUI to display a chatbot interface for FAQs",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "webpack --mode development --watch",
+    "start": "webpack --mode development --watch",
+    "lint": "echo \"No linting configured\"",
+    "clean": "node -e \"const fs=require('fs');const path=require('path');const dir=path.join(__dirname,'public','dist');if(fs.existsSync(dir)){fs.rmSync(dir,{recursive:true,force:true});console.log('Cleaned dist directory');}else{console.log('Dist directory does not exist.')}\""
+  },
+  "author": "WordPress Developer",
+  "license": "GPL-2.0+",
+  "dependencies": {
+    "botui": "^0.3.9",
+    "vue": "^2.6.14"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.0",
+    "@babel/preset-env": "^7.16.11",
+    "babel-loader": "^8.2.3",
+    "css-loader": "^6.6.0",
+    "mini-css-extract-plugin": "^2.5.3",
+    "webpack": "^5.68.0",
+    "webpack-cli": "^5.1.4"
+  }
+}
