@@ -142,6 +142,7 @@ a.botui-message-content-link:focus{outline:thin dotted}a.botui-message-content-l
     margin: 0;
     font-size: 16px;
     font-weight: 500;
+    color: #fff;
 }
 
 /* Close button */
