@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: BotUI FAQ Chatbot
- * Plugin URI: https://example.com/botui-faq-chatbot
+ * Plugin URI: https://github.com/de-er-kid/botui-faq-chatbot
  * Description: A WordPress plugin that uses BotUI to display a chatbot interface for FAQs.
  * Version: 1.0.0
  * Author: Mohammed Sinan P K
- * Author URI: Mmailto:mohammed.sinan@firstscreen.com
+ * Author URI: mailto:mohammed.sinan@firstscreen.com
  * License: GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain: botui-faq-chatbot
