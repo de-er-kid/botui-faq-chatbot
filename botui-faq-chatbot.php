@@ -3,7 +3,8 @@
  * Plugin Name: BotUI FAQ Chatbot
  * Plugin URI: https://github.com/de-er-kid/botui-faq-chatbot
  * Description: A WordPress plugin that uses BotUI to display a chatbot interface for FAQs.
- * Version: 1.0.0
+ * Version: 1.0.1
+
  * Author: Mohammed Sinan P K
  * Author URI: mailto:mohammed.sinan@firstscreen.com
  * License: GPL-2.0+
@@ -47,7 +48,7 @@ function botui_faq_chatbot_register_post_type() {
         'labels'             => $labels,
         'description'        => __('FAQ items for the BotUI chatbot', 'botui-faq-chatbot'),
         'public'             => true,
-        'publicly_queryable' => true,
+        'publicly_queryable' => false,
         'show_ui'            => true,
         'show_in_menu'       => true,
         'query_var'          => true,
@@ -222,4 +223,44 @@ require_once BOTUI_FAQ_CHATBOT_PLUGIN_DIR . 'includes/class-botui-faq-chatbot.ph
 // Load admin functionality if in admin
 if (is_admin()) {
     require_once BOTUI_FAQ_CHATBOT_PLUGIN_DIR . 'admin/class-botui-faq-chatbot-admin.php';
+}
+
+register_activation_hook(__FILE__, 'botui_faq_add_default_faqs');
+
+function botui_faq_add_default_faqs() {
+    // Check if there are any existing FAQs
+    $existing_faqs = get_posts(array(
+        'post_type' => 'botui_faq',
+        'post_status' => 'publish',
+        'numberposts' => 1
+    ));
+
+    if (!empty($existing_faqs)) {
+        return; // FAQs already exist, do not add defaults
+    }
+
+    $default_faqs = array(
+        array(
+            'post_title'   => 'About Us',
+            'post_content' => 'Discover the transformative power of fruits and veggies in your daily routine with Juicee World. From educational content to delicious recipes, we’ve got you covered.',
+            'post_status'  => 'publish',
+            'post_type'    => 'botui_faq'
+        ),
+        array(
+            'post_title'   => 'Privacy',
+            'post_content' => 'Your privacy is important to us. We do not share your account information with third parties. For more details, please refer to our Privacy Policy.',
+            'post_status'  => 'publish',
+            'post_type'    => 'botui_faq'
+        ),
+        array(
+            'post_title'   => 'Cancellation',
+            'post_content' => 'To cancel your subscription, please send us an email to support@juiceeworld.com or call us 0031202254833 (EU&UK) or 0018442345502 (US)',
+            'post_status'  => 'publish',
+            'post_type'    => 'botui_faq'
+        ),
+    );
+
+    foreach ($default_faqs as $faq) {
+        wp_insert_post($faq);
+    }
 }
