@@ -47,7 +47,7 @@ if (!defined('WPINC')) {
                         <label for="botui_primary_color"><?php esc_html_e('Primary Color', 'botui-faq-chatbot'); ?></label>
                     </th>
                     <td>
-                        <input type="color" id="botui_primary_color" name="botui_faq_chatbot_options[primary_color]" value="<?php echo esc_attr($primary_color); ?>">
+                        <input type="text" id="botui_primary_color" name="botui_faq_chatbot_options[primary_color]" value="<?php echo esc_attr($primary_color); ?>" class="wp-color-picker">
                         <p class="description"><?php esc_html_e('The main color used for the chatbot interface.', 'botui-faq-chatbot'); ?></p>
                     </td>
                 </tr>

@@ -55,6 +55,9 @@ class BotUI_FAQ_Chatbot_Admin {
                 BOTUI_FAQ_CHATBOT_VERSION,
                 'all'
             );
+
+            wp_enqueue_style('wp-color-picker');
+            wp_enqueue_script('wp-color-picker');
         }
     }
 

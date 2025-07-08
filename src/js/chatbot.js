@@ -253,9 +253,16 @@ import 'botui/build/botui-theme-default.css';
             return;
         }
         
-        // Set initial state - assume chat starts hidden
-        if (!chatWindow.classList.contains('chat-hidden')) {
-            chatWindow.classList.add('chat-hidden');
+        // Set initial state - chat starts open by default
+        chatWindow.classList.remove('chat-hidden');
+        isChatOpen = true;
+        
+        // Initialize the chatbot immediately since chat starts open
+        if (!isInitialized) {
+            // Add a small delay to ensure DOM is ready
+            setTimeout(() => {
+                initializeChatbot();
+            }, 300);
         }
         
         // Use toggle button as open/close toggle
