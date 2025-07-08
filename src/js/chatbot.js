@@ -135,8 +135,9 @@ import 'botui/build/botui-theme-default.css';
                         content: JSON.parse(selectedFaq.answer),
                         delay: DELAY.ANSWER,
                         loading: true,
+                        html: true,
                         type: 'html',  // Force HTML rendering
-                        unsafeHTML: true
+                        // unsafeHTML: true
                     }).then(function() {
                         return botui.message.add({
                             content: 'Is there anything else you would like to know?',
