@@ -102,6 +102,7 @@ function botui_faq_chatbot_enqueue_scripts() {
     );
 
     $faq_items = get_posts($args);
+    
 
     // Prepare the FAQ data for JavaScript
     $faq_data = array();
@@ -109,7 +110,7 @@ function botui_faq_chatbot_enqueue_scripts() {
         $faq_data[] = array(
             'id'       => $faq->ID,
             'question' => htmlspecialchars($faq->post_title, ENT_QUOTES, 'UTF-8'),
-            'answer'   => wp_json_encode(apply_filters('the_content', $faq->post_content)),
+            'answer'   => base64_encode($faq->post_content), // Base64 encode to avoid parsing issues
         );
     }
     

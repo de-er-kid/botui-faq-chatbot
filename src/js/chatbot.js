@@ -58,11 +58,34 @@ import 'botui/build/botui-theme-default.css';
                 content: 'Hello! I can help answer your questions. What would you like to know?',
                 delay: DELAY.WELCOME
             }).then(function() {
+                // Debug: Log the FAQ data
+                console.log('=== FAQ DEBUG INFO ===');
+                console.log('botuiFaqChatbot exists:', typeof botuiFaqChatbot !== 'undefined');
+                if (typeof botuiFaqChatbot !== 'undefined') {
+                    console.log('botuiFaqChatbot object:', botuiFaqChatbot);
+                    console.log('faqData exists:', !!botuiFaqChatbot.faqData);
+                    console.log('faqData is array:', Array.isArray(botuiFaqChatbot.faqData));
+                    if (botuiFaqChatbot.faqData) {
+                        console.log('faqData length:', botuiFaqChatbot.faqData.length);
+                        console.log('faqData content:', botuiFaqChatbot.faqData);
+                        botuiFaqChatbot.faqData.forEach((faq, index) => {
+                            console.log(`FAQ ${index}:`, {
+                                id: faq?.id,
+                                question: faq?.question,
+                                answer: faq?.answer,
+                                hasId: !!faq?.id
+                            });
+                        });
+                        console.log('Has valid FAQ with ID:', botuiFaqChatbot.faqData.some(faq => faq?.id));
+                    }
+                }
+                console.log('=== END FAQ DEBUG ===');
+                
                 // Check if FAQ data exists and is properly formatted
                 if (typeof botuiFaqChatbot !== 'undefined' && 
                     botuiFaqChatbot.faqData && 
                     Array.isArray(botuiFaqChatbot.faqData) && 
-                    botuiFaqChatbot.faqData.some(faq => faq?.id)) { // Check for at least one valid FAQ
+                    botuiFaqChatbot.faqData.some(faq => faq?.id)) {
                     return showQuestions(true, false);
                 } else {
                     console.warn('FAQ data is missing or empty');
@@ -130,20 +153,20 @@ import 'botui/build/botui-theme-default.css';
                 
                 // Show the answer
                 if (selectedFaq) {
-                    // In the showQuestions function:
+                    // Decode the base64 encoded answer
+                    const decodedAnswer = atob(selectedFaq.answer);
+                    
                     return botui.message.add({
-                        content: JSON.parse(selectedFaq.answer),
+                        content: decodedAnswer,
                         delay: DELAY.ANSWER,
                         loading: true,
-                        html: true,
-                        type: 'html',  // Force HTML rendering
-                        // unsafeHTML: true
+                        type: 'html'
                     }).then(function() {
                         return botui.message.add({
                             content: 'Is there anything else you would like to know?',
                             delay: DELAY.FOLLOW_UP
                         }).then(function() {
-                            return showQuestions(false, true); // Show only the "Ask another question" button
+                            return showQuestions(false, true);
                         });
                     });
                 } else {
