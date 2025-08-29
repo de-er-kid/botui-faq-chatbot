@@ -4,9 +4,10 @@
  * Main JavaScript file for the chatbot functionality.
  * This file handles the initialization of the BotUI chatbot,
  * displays FAQ questions as buttons, and manages the chat window animations.
+ * Includes state management to remember user's chat open/close preference.
  * 
  * @package BotUI-FAQ-Chatbot
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 // Use Vue from global scope (loaded via WordPress)
@@ -30,10 +31,41 @@ import 'botui/build/botui-theme-default.css';
         FOLLOW_UP: 1000
     };
     
+    // LocalStorage key for chat state
+    const CHAT_STATE_KEY = 'botuiFaqChatState';
+    
     // Variables to track initialization
     let botui = null;
     let isInitialized = false;
     let isChatOpen = false; // Track chat state
+    
+    /**
+     * Get chat state from localStorage
+     * @returns {object} Chat state object with isOpen property
+     */
+    function getChatState() {
+        try {
+            const state = localStorage.getItem(CHAT_STATE_KEY);
+            return state ? JSON.parse(state) : { isOpen: true }; // Default to open for first-time users
+        } catch (error) {
+            console.warn('Error reading chat state from localStorage:', error);
+            return { isOpen: true }; // Default fallback
+        }
+    }
+    
+    /**
+     * Save chat state to localStorage
+     * @param {boolean} isOpen - Whether the chat is open
+     */
+    function saveChatState(isOpen) {
+        try {
+            const state = { isOpen: isOpen };
+            localStorage.setItem(CHAT_STATE_KEY, JSON.stringify(state));
+            console.log('Chat state saved:', state);
+        } catch (error) {
+            console.warn('Error saving chat state to localStorage:', error);
+        }
+    }
     
     /**
      * Initialize the chatbot interface
@@ -194,6 +226,9 @@ import 'botui/build/botui-theme-default.css';
         chatWindow.classList.add('chat-animate-in');
         isChatOpen = true;
         
+        // Save the open state to localStorage
+        saveChatState(true);
+        
         setTimeout(() => {
             chatWindow.classList.remove('chat-animate-in');
             // Initialize chatbot if not already initialized
@@ -210,6 +245,9 @@ import 'botui/build/botui-theme-default.css';
         const chatWindow = document.getElementById('botui-app');
         chatWindow.classList.add('chat-animate-out');
         isChatOpen = false;
+        
+        // Save the closed state to localStorage
+        saveChatState(false);
         
         setTimeout(() => {
             chatWindow.classList.add('chat-hidden');
@@ -270,6 +308,38 @@ import 'botui/build/botui-theme-default.css';
     }
     
     /**
+     * Apply initial chat state based on localStorage
+     */
+    function applyInitialChatState() {
+        const chatState = getChatState();
+        const chatWindow = document.getElementById('botui-app');
+        
+        if (!chatWindow) {
+            console.error('Chat window element not found');
+            return;
+        }
+        
+        console.log('Applying initial chat state:', chatState);
+        
+        if (chatState.isOpen) {
+            // Chat should be open
+            chatWindow.classList.remove('chat-hidden');
+            isChatOpen = true;
+            
+            // Initialize the chatbot
+            if (!isInitialized) {
+                setTimeout(() => {
+                    initializeChatbot();
+                }, 300);
+            }
+        } else {
+            // Chat should be closed
+            chatWindow.classList.add('chat-hidden');
+            isChatOpen = false;
+        }
+    }
+    
+    /**
      * Initialize chat toggle functionality
      * Sets up event listeners for the chat toggle button and close button
      */
@@ -286,17 +356,8 @@ import 'botui/build/botui-theme-default.css';
             return;
         }
         
-        // Set initial state - chat starts open by default
-        chatWindow.classList.remove('chat-hidden');
-        isChatOpen = true;
-        
-        // Initialize the chatbot immediately since chat starts open
-        if (!isInitialized) {
-            // Add a small delay to ensure DOM is ready
-            setTimeout(() => {
-                initializeChatbot();
-            }, 300);
-        }
+        // Apply the saved state instead of defaulting to open
+        applyInitialChatState();
         
         // Use toggle button as open/close toggle
         toggleButton.addEventListener('click', function() {
