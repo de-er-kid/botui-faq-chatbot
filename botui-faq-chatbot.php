@@ -3,7 +3,7 @@
  * Plugin Name: BotUI FAQ Chatbot
  * Plugin URI: https://github.com/de-er-kid/botui-faq-chatbot
  * Description: A WordPress plugin that uses BotUI to display a chatbot interface for FAQs.
- * Version: 1.0.1
+ * Version: 1.2.0
 
  * Author: Mohammed Sinan P K
  * Author URI: mailto:mohammed.sinan@firstscreen.com
