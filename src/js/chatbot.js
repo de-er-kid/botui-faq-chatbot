@@ -298,19 +298,27 @@ import 'botui/build/botui-theme-default.css';
             delay: DELAY.ANSWER,
             loading: true
         }).then(() => {
-            // Prepare form data
-            const formData = new FormData();
+            // Get current user's email if they're logged in
+            let requestData = {};
             
             if (email) {
-                formData.append('email', email);
+                // Use provided email for non-logged in users
+                requestData.email = email;
+            } else if (botuiFaqChatbot.currentUserEmail) {
+                // Use actual email from WordPress if available
+                requestData.email = botuiFaqChatbot.currentUserEmail;
             } else {
-                formData.append('email', 'current_user');
+                // Fallback to current_user flag
+                requestData.email = 'current_user';
             }
             
             // Send AJAX request
             return fetch(botuiFaqChatbot.ajaxUrl + '?action=botui_unsubscribe', {
                 method: 'POST',
-                body: formData,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData),
                 credentials: 'same-origin'
             })
             .then(response => {

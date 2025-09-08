@@ -113,6 +113,12 @@ function botui_faq_chatbot_enqueue_scripts() {
             'answer'   => base64_encode($faq->post_content), // Base64 encode to avoid parsing issues
         );
     }
+
+    $current_user_email = '';
+    if (is_user_logged_in()) {
+        $current_user = wp_get_current_user();
+        $current_user_email = $current_user->user_email;
+    }
     
     // Localize the script with FAQ data
     wp_localize_script(
@@ -122,6 +128,7 @@ function botui_faq_chatbot_enqueue_scripts() {
             'faqData' => $faq_data,
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce'   => wp_create_nonce('botui_faq_chatbot_nonce'),
+            'currentUserEmail' => $current_user_email,
         )
     );
 
@@ -270,16 +277,18 @@ function botui_faq_add_default_faqs() {
  * Handle Unsubscribe AJAX request
  */
 function handle_botui_unsubscribe() {
+    // Get JSON data from request
+    $request_body = file_get_contents('php://input');
+    $data = json_decode($request_body, true);
+    
     // Check if email is provided
-    if (!isset($_POST['email']) || empty($_POST['email'])) {
+    if (empty($data['email'])) {
         wp_send_json_error(['message' => 'Email is missing']);
         return;
     }
-    
-    $email = $_POST['email'];
-    
-    // Handle special case for logged-in users
-    if ($email === 'current_user') {
+
+    // Check if current_user flag is sent
+    if ($data['email'] === 'current_user') {
         // Get current user's email
         $current_user = wp_get_current_user();
         if ($current_user->exists()) {
@@ -289,7 +298,8 @@ function handle_botui_unsubscribe() {
             return;
         }
     } else {
-        $email = sanitize_email($email);
+        // Sanitize email
+        $email = sanitize_email($data['email']);
     }
 
     // Validate email format
