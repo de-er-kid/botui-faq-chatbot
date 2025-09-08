@@ -26,6 +26,7 @@ if (!defined('WPINC')) {
         $chatbot_name = isset($options['chatbot_name']) ? $options['chatbot_name'] : get_bloginfo('name') . ' ' . __('Assistant', 'botui-faq-chatbot');
         $primary_color = isset($options['primary_color']) ? $options['primary_color'] : '#2196F3';
         $chat_position = isset($options['chat_position']) ? $options['chat_position'] : 'right';
+        $service_name = isset($options['service_name']) ? $options['service_name'] : 'Juice World';
         ?>
         
         <div class="botui-faq-metabox">
@@ -62,6 +63,16 @@ if (!defined('WPINC')) {
                             <option value="left" <?php selected($chat_position, 'left'); ?>><?php esc_html_e('Bottom Left', 'botui-faq-chatbot'); ?></option>
                         </select>
                         <p class="description"><?php esc_html_e('The position of the chat icon on the screen.', 'botui-faq-chatbot'); ?></p>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th scope="row">
+                        <label for="botui_service_name"><?php esc_html_e('Service Name', 'botui-faq-chatbot'); ?></label>
+                    </th>
+                    <td>
+                        <input type="text" id="botui_service_name" name="botui_faq_chatbot_options[service_name]" value="<?php echo esc_attr($service_name); ?>" class="regular-text">
+                        <p class="description"><?php esc_html_e('The service name used for unsubscription requests.', 'botui-faq-chatbot'); ?></p>
                     </td>
                 </tr>
             </table>

@@ -3,7 +3,7 @@
  * Plugin Name: BotUI FAQ Chatbot
  * Plugin URI: https://github.com/de-er-kid/botui-faq-chatbot
  * Description: A WordPress plugin that uses BotUI to display a chatbot interface for FAQs.
- * Version: 1.2.0
+ * Version: 1.3.0
 
  * Author: Mohammed Sinan P K
  * Author URI: mailto:mohammed.sinan@firstscreen.com
@@ -265,3 +265,72 @@ function botui_faq_add_default_faqs() {
         wp_insert_post($faq);
     }
 }
+
+/**
+ * Handle Unsubscribe AJAX request
+ */
+function handle_botui_unsubscribe() {
+    // Check if email is provided
+    if (!isset($_POST['email']) || empty($_POST['email'])) {
+        wp_send_json_error(['message' => 'Email is missing']);
+        return;
+    }
+    
+    $email = $_POST['email'];
+    
+    // Handle special case for logged-in users
+    if ($email === 'current_user') {
+        // Get current user's email
+        $current_user = wp_get_current_user();
+        if ($current_user->exists()) {
+            $email = $current_user->user_email;
+        } else {
+            wp_send_json_error(['message' => 'User not logged in']);
+            return;
+        }
+    } else {
+        $email = sanitize_email($email);
+    }
+
+    // Validate email format
+    if (!is_email($email)) {
+        wp_send_json_error(['message' => 'Invalid email address']);
+        return;
+    }
+
+    // Get service name from settings
+    $options = get_option('botui_faq_chatbot_options', array());
+    $service_name = isset($options['service_name']) ? $options['service_name'] : 'Juice World';
+
+    // Send POST request to external API
+    $response = wp_remote_post('https://callback.1screen.com/wplms/api/unsub', [
+        'method' => 'POST',
+        'headers' => [
+            'Authorization' => 'QXBUMGI0Ok9GfHRlSCtGaXsrLjEz',
+            'Content-Type'  => 'application/json',
+        ],
+        'body' => json_encode([
+            'email'       => $email,
+            'serviceName' => $service_name,
+            'type'        => 'ccb'
+        ]),
+    ]);
+
+    // Check the API response
+    if (is_wp_error($response)) {
+        wp_send_json_error(['message' => 'API request failed']);
+    } else {
+        $body = wp_remote_retrieve_body($response);
+        
+        // Since the external API returns plain text "Ok" when successful
+        if (trim($body) === "Ok") {
+            wp_send_json_success(['message' => 'Successfully unsubscribed']);
+        } else {
+            wp_send_json_error(['message' => 'Unsubscription failed: ' . trim($body)]);
+        }
+    }
+}
+
+// Hook into WordPress AJAX action
+add_action('wp_ajax_botui_unsubscribe', 'handle_botui_unsubscribe');
+add_action('wp_ajax_nopriv_botui_unsubscribe', 'handle_botui_unsubscribe'); // For non-logged users

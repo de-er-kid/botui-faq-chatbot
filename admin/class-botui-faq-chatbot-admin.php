@@ -192,6 +192,7 @@ class BotUI_FAQ_Chatbot_Admin {
                     'chatbot_name' => get_bloginfo('name') . ' ' . __('Assistant', 'botui-faq-chatbot'),
                     'primary_color' => '#2196F3',
                     'chat_position' => 'right',
+                    'service_name' => 'Juice World',
                 ),
             )
         );
@@ -226,6 +227,13 @@ class BotUI_FAQ_Chatbot_Admin {
             $sanitized_input['chat_position'] = $input['chat_position'];
         } else {
             $sanitized_input['chat_position'] = 'right';
+        }
+        
+        // Sanitize service name
+        if (isset($input['service_name'])) {
+            $sanitized_input['service_name'] = sanitize_text_field($input['service_name']);
+        } else {
+            $sanitized_input['service_name'] = 'Juice World';
         }
         
         return $sanitized_input;

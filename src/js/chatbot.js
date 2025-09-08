@@ -162,6 +162,12 @@ import 'botui/build/botui-theme-default.css';
                     }
                 });
                 
+                // Add cancellation button
+                buttons.push({
+                    text: 'Cancellation',
+                    value: 'cancellation'
+                });
+                
                 // If no valid buttons were created, show an error
                 if (buttons.length === 0) {
                     return botui.message.add({
@@ -178,6 +184,11 @@ import 'botui/build/botui-theme-default.css';
                 // If user wants to ask another question
                 if (res.value === 'more') {
                     return showQuestions(true, false); // Show all questions
+                }
+                
+                // Handle cancellation button
+                if (res.value === 'cancellation') {
+                    return handleCancellation();
                 }
                 
                 // Find the selected FAQ item
@@ -215,6 +226,131 @@ import 'botui/build/botui-theme-default.css';
             console.error('Error in showQuestions:', error);
             return Promise.reject(error);
         }
+    }
+    
+    /**
+     * Handle cancellation button click
+     * Implements different flows for signed-in and signed-out users
+     */
+    function handleCancellation() {
+        // Check if user is logged in (WordPress adds logged-in class to body)
+        const isLoggedIn = document.body.classList.contains('logged-in');
+        
+        if (isLoggedIn) {
+            // Flow for signed-in user
+            return botui.message.add({
+                content: 'Are you sure you want to unsubscribe?',
+                delay: DELAY.ANSWER
+            }).then(() => {
+                return botui.action.button({
+                    delay: DELAY.BUTTONS,
+                    action: [
+                        { text: 'Yes, unsubscribe me', value: 'yes' },
+                        { text: 'No, cancel', value: 'no' }
+                    ]
+                });
+            }).then((res) => {
+                if (res.value === 'yes') {
+                    // User confirmed unsubscription
+                    return processUnsubscribe();
+                } else {
+                    // User cancelled unsubscription
+                    return botui.message.add({
+                        content: 'Unsubscription cancelled.',
+                        delay: DELAY.ANSWER
+                    }).then(() => showQuestions(false, true));
+                }
+            });
+        } else {
+            // Flow for signed-out user
+            return botui.message.add({
+                content: 'Please enter your email address to unsubscribe:',
+                delay: DELAY.ANSWER
+            }).then(() => {
+                return botui.action.text({
+                    delay: DELAY.BUTTONS,
+                    action: {
+                        placeholder: 'Your email address'
+                    }
+                });
+            }).then((res) => {
+                const email = res.value;
+                // Validate email format
+                if (!validateEmail(email)) {
+                    return botui.message.add({
+                        content: 'Please enter a valid email address.',
+                        delay: DELAY.ANSWER
+                    }).then(() => handleCancellation());
+                }
+                
+                return processUnsubscribe(email);
+            });
+        }
+    }
+    
+    /**
+     * Process unsubscription request
+     * @param {string} email - Email address for non-logged in users
+     */
+    function processUnsubscribe(email = null) {
+        return botui.message.add({
+            content: 'Processing your unsubscription request...',
+            delay: DELAY.ANSWER,
+            loading: true
+        }).then(() => {
+            // Prepare form data
+            const formData = new FormData();
+            
+            if (email) {
+                formData.append('email', email);
+            } else {
+                formData.append('email', 'current_user');
+            }
+            
+            // Send AJAX request
+            return fetch(botuiFaqChatbot.ajaxUrl + '?action=botui_unsubscribe', {
+                method: 'POST',
+                body: formData,
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    return botui.message.add({
+                        content: 'You have been successfully unsubscribed.',
+                        delay: DELAY.ANSWER
+                    }).then(() => showQuestions(false, true));
+                } else {
+                    return botui.message.add({
+                        content: 'An error occurred: ' + data.data.message + '<br><br>Please contact customer support.',
+                        delay: DELAY.ANSWER,
+                        type: 'html'
+                    }).then(() => showQuestions(false, true));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                return botui.message.add({
+                    content: 'An unexpected error occurred. Please contact customer support.',
+                    delay: DELAY.ANSWER
+                }).then(() => showQuestions(false, true));
+            });
+        });
+    }
+    
+    /**
+     * Validate email format
+     * @param {string} email - Email to validate
+     * @returns {boolean} - Whether the email is valid
+     */
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
     }
     
     /**
