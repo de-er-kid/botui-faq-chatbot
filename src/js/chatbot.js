@@ -335,7 +335,7 @@ import 'botui/build/botui-theme-default.css';
                     }).then(() => showQuestions(false, true));
                 } else {
                     return botui.message.add({
-                        content: 'An error occurred: ' + data.data.message + '<br><br>Please contact customer support.',
+                        content: data.data.message + '<br>Please contact customer support.',
                         delay: DELAY.ANSWER,
                         type: 'html'
                     }).then(() => showQuestions(false, true));

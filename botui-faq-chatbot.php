@@ -322,7 +322,8 @@ function handle_botui_unsubscribe() {
         'body' => json_encode([
             'email'       => $email,
             'serviceName' => $service_name,
-            'type'        => 'ccb'
+            'type'        => 'ccb',
+            'unsubMethod' => 'chat bot'
         ]),
     ]);
 
